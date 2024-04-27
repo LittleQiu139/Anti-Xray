@@ -1,0 +1,9 @@
+name: antixray
+version: '1.0-SNAPSHOT'
+main: org.example.spigot.antixray.Antixray
+api-version: '1.20'
+commands:
+  axreload:
+    description: Reload the plugin configuration.
+    usage: /axreload
+
