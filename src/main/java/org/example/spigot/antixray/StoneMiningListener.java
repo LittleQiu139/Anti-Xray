@@ -85,12 +85,12 @@ public class StoneMiningListener implements Listener {
         long currentTime = System.currentTimeMillis();
         tag.putIfAbsent(playerId, 0); // 确保 tag 已初始化
         HashMap<Material, Integer> counts = blockCounts.get(playerId);
-
         // 更新和检查玩家是否更换了挖掘的矿物类
-        if (brokenBlock != lastBrokenBlock.getOrDefault(playerId, brokenBlock) && plugin.getConfig().getConfigurationSection("trackedBlocks").getKeys(false).contains(brokenBlock)) {
-            // 如果更换了矿物类型，则重置之前矿物的计数
-            if (counts != null && tag.get(playerId)>0) {
-                counts.clear();
+        //if (brokenBlock != lastBrokenBlock.getOrDefault(playerId, brokenBlock) && plugin.getConfig().getConfigurationSection("trackedBlocks").getKeys(false).contains(brokenBlock)) {
+        if (lastBrokenBlock.getOrDefault(playerId, brokenBlock) != Material.STONE && brokenBlock != Material.STONE && brokenBlock != lastBrokenBlock.getOrDefault(playerId, brokenBlock) && plugin.getConfig().getConfigurationSection("trackedBlocks").getKeys(true).contains(brokenBlock.toString())) {
+                // 如果更换了矿物类型，则重置之前矿物的计数
+            if (plugin.getConfig().getConfigurationSection("trackedBlocks").getKeys(false).contains(counts) && tag.get(playerId)>0) {
+                counts.put(brokenBlock,0);
                 tag.put(playerId, 0);
             } else {
                 blockCounts.put(playerId, new HashMap<>());
@@ -99,6 +99,10 @@ public class StoneMiningListener implements Listener {
         }
         // 追踪石头连续挖掘
         trackContinuousStoneMining(player, playerId, brokenBlock, currentTime);
+
+        if(counts != null){
+            player.sendMessage(brokenBlock + counts.getOrDefault(brokenBlock,0).toString());
+        }
 
         // 处理配置文件中的方块
         handleTrackedBlocks(player, playerId, brokenBlock, counts);
@@ -142,7 +146,7 @@ public class StoneMiningListener implements Listener {
             blockCounts.putIfAbsent(playerId, new HashMap<>());
             if (plugin.getConfig().getConfigurationSection("trackedBlocks").getKeys(false).contains(brokenBlock.toString())) {
                 int limit = plugin.getConfig().getInt("trackedBlocks." + brokenBlock.toString());
-                counts.put(brokenBlock, counts.getOrDefault(brokenBlock, 0) + 1);
+                counts.put(brokenBlock, counts.getOrDefault(brokenBlock, 1) + 1);
                 if (counts.get(brokenBlock) >= limit) {
                     Random random = new Random();
                     int r = random.nextInt(10);
