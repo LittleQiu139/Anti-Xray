@@ -100,9 +100,9 @@ public class StoneMiningListener implements Listener {
         // 追踪石头连续挖掘
         trackContinuousStoneMining(player, playerId, brokenBlock, currentTime);
 
-        if(counts != null){
+        /*if(counts != null){
             player.sendMessage(brokenBlock + counts.getOrDefault(brokenBlock,0).toString());
-        }
+        }*///调试模式
 
         // 处理配置文件中的方块
         handleTrackedBlocks(player, playerId, brokenBlock, counts);
